@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&family=Roboto:wght@300&display=swap");
+
+.card {
+    background-color: transparent !important; 
+}
+
+.prod_card {
+    width: 130px;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 2px;
+}
+
+.popp_s {
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    color: #e1e1e1;
+    font-weight: 500; }
