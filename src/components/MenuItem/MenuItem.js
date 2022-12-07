@@ -1,8 +1,10 @@
 import React from "react";
 
-const MenuItem = ({ title, link = '#', active }) => {
+import { NavLink } from 'react-router-dom';
+
+const MenuItem = ({ title, to}) => {
     return (
-        <a href={link} className={`btn btn-primary ${active}`}>{title}</a>
+        <NavLink to={to} className="btn btn-primary">{title}</NavLink>
     );
   };
   

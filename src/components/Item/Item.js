@@ -1,30 +1,27 @@
 import React from 'react';
 
-import ItemDetailContainer from '../ItemDetailContainer/ItemDetailContainer';
-
-import ItemCount from '../ItemCount/ItemCount';
+import { NavLink } from 'react-router-dom';
 
 import './item.css';
-
-
 
 const Item = ({item}) => {
     return (
         <>
-          <div className="col">
-            <div className="card prod_card p-1 mb-1 h-100">
-                    <img loading="lazy" src={require(`../Images/${item.imagen}`)} className="img_sombra img_opac mb-1"
-                    alt="Portada Titulo" />
+            <div className="col" key={item.id}>
+                <div className={`card prod_card ${item.classadicional} p-1 mb-1 h-100`}>
+                    <NavLink to={`/item/${item.id}`}>
+                        <img loading="lazy" src={item.imagen} className="img_sombra img_opac mb-1"
+                        alt={`Portada ${item.titulo}`} />
+                    </NavLink>
                     <div className="card-body p-0 text-center">
-                        <ItemDetailContainer id={item.id}/>
+                        <p className="popp_s font_espac1 mb-1">{item.titulo}</p>
                     </div>
                     <div className="card-footer p-1 mb-0 text-center">
+                        <NavLink to={`/item/${item.id}`}>
+                            <button type="button" className="btn btn-primary btn-sm">Ver detalle</button>
+                        </NavLink>
                         <p className="popp_s font_precio mb-1">
                             $ {item.precio}
-                        </p>
-                        <ItemCount stock={item.stock}/>
-                        <p className="popp_s font_precio mb-1">
-                            Stock: {item.stock} uds
                         </p>
                     </div>
                 </div>
