@@ -35,9 +35,9 @@ const ItemDetailContainer = () => {
         <div className="card-group row-cols-auto gap-3 justify-content-center">
           {
             Object.keys(productoFiltrado).length === 0 ? (
-              <div class="d-flex">
-                <div class="spinner-border" role="status">
-                  <span class="visually-hidden">Cargando...</span>
+              <div className="d-flex">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Cargando...</span>
               </div>
             </div>
             ) : (

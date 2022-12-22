@@ -8,6 +8,8 @@ import ItemList from "../ItemList/ItemList";
 
 import productos from "../Productos/productos.json";
 
+//import { getFirestore } from 'firebase/firestore'
+
 import "./itemlistcontainer.css";
 
 const ItemListContainer = () => {
@@ -30,9 +32,9 @@ const ItemListContainer = () => {
       <div className="container-fluid p-3 bkg_transp justify-content-center">
         <Saludo greeting={"Bienvenido a nuestra tienda"} />
         {Object.keys(items).length === 0 ? (
-          <div class="d-flex justify-content-center">
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Cargando...</span>
+          <div className="d-flex justify-content-center">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Cargando...</span>
           </div>
         </div>
         ) : (

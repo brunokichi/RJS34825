@@ -17,5 +17,11 @@
 .popp_s {
     font-family: "Poppins", sans-serif;
     font-size: 13px;
-    color: #e1e1e1;
+    color: #e1e1e1!important;
     font-weight: 500; }
+
+    .popp_m {
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        color: #e1e1e1!important;
+        font-weight: 500; }
