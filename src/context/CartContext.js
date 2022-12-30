@@ -7,8 +7,14 @@ const CartProvider = ({ children }) => {
 
   const [cartCant, setCartCant] = useState(0);
 
+  const [cartCosto, setCartCosto] = useState(0);
+
   useEffect(() => {
     setCartCant(cart.reduce((acc, item) => acc + item.cantidad, 0));
+  }, [cart]);
+
+  useEffect(() => {
+    setCartCosto(cart.reduce((acc, item) => acc + (item.cantidad * item.precio), 0));
   }, [cart]);
 
   const addToCart = (obj, cant) => {
@@ -20,6 +26,7 @@ const CartProvider = ({ children }) => {
       });
       cart[index].cantidad = cant;
       setCartCant(cart.reduce((acc, item) => acc + item.cantidad, 0));
+      setCartCosto(cart.reduce((acc, item) => acc + (item.cantidad * item.precio), 0));
     } else {
       obj.cantidad = cant;
       setCart((cart) => [...cart, obj]);
@@ -35,6 +42,7 @@ const CartProvider = ({ children }) => {
       });
       cart.splice(index, 1);
       setCartCant(cart.reduce((acc, item) => acc + item.cantidad, 0));
+      setCartCosto(cart.reduce((acc, item) => acc + (item.cantidad * item.precio), 0));
     }
   };
   
@@ -44,7 +52,7 @@ const CartProvider = ({ children }) => {
   }
 
   return (
-    <CartContext.Provider value={{ cart, setCart, addToCart, remFromCart, cartCant, clearCart }}>
+    <CartContext.Provider value={{ cart, setCart, addToCart, remFromCart, cartCant, cartCosto, clearCart }}>
       {children}
     </CartContext.Provider>
   );

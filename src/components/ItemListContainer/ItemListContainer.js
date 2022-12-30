@@ -6,9 +6,7 @@ import Saludo from "../Saludo/Saludo";
 
 import ItemList from "../ItemList/ItemList";
 
-import productos from "../Productos/productos.json";
-
-//import { getFirestore } from 'firebase/firestore'
+import { getFirestore, collection,  getDocs,  query,  where } from 'firebase/firestore'
 
 import "./itemlistcontainer.css";
 
@@ -18,14 +16,15 @@ const ItemListContainer = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    const promesa = new Promise((resolve) => {
-      setTimeout(() => resolve(productos), 2000);
+    const db = getFirestore();
+    let itemsCollection = collection(db, 'items');
+    if (id) {
+      itemsCollection = query(itemsCollection, where('tipo', '==', id));
+    } 
+    getDocs(itemsCollection).then((snapshot) => {
+      setItems(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
     });
-
-    promesa.then((res) => {
-      setItems(res);
-    });
-  }, []);
+  },);
 
   return (
     <>

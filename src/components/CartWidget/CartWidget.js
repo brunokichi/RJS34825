@@ -4,8 +4,6 @@ import { NavLink } from 'react-router-dom';
 
 import { CartContext } from '../../context/CartContext';
 
-import './cartwidget.css';
-
 const CartWidget = () => {
 
     const { cartCant } = useContext(CartContext);
@@ -13,8 +11,10 @@ const CartWidget = () => {
     return (
         <div>
             <NavLink to={"/cart"}>
-                <img className="cartwidget" src="../Images/cart.jpg" alt="Imagen carrito"/>
-                <button type="button" className="btn btn-danger me-1" disabled>{cartCant}</button>
+                
+                <img src="../Images/cart_full.png" alt="Carrito"/>
+                <span className="badge text-bg-success me-1">{cartCant}</span>
+                
             </NavLink>
         </div>
     );
