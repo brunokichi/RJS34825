@@ -1,70 +1,162 @@
-# Getting Started with Create React App
+# Proyecto E-Commerce
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Proyecto realizando por Bruno Kichinovsky para la comision 34825 del curso de `React JS` en [Coderhouse](https://www.coderhouse.com/)
 
-## Available Scripts
+## Descripción
+El proyecto contiene las funciones principales de una tienda online. 
+ - Pagina principal con todos los productos disponibles
+ - Barra de navegación con acceso a los distintas categorias para ver los productos disponibles junto a breve información
+ - Acceso al detalle de cada Item y posibilidad de seleccionar cantidad para agregar al carrito de compras
+ - El Carrito de compras cuenta con la siguiente información
+   - Detalle de productos cargados con la posibilidad de modificar su cantidad, ver costo tanto unitario como total del mismo y la opción de eliminarlo del carrito
+   - Resumen con la cantidad total de productos cargados y costo
+   - Botón para vaciar al mismo
+   - Formulario de contacto para poder finalizar la compra
+    ![Captura ejemplo del carrito](./public/Images/md_cart.png)
+- Base de datos con las siguientes colecciones
+  - Clientes: se almacenan los distintos clientes que van realizando compras en el sitio. Se utiliza como campo único la casilla de mail: 
+    - De existir se actualizan los campos nombre y télefono
+    - De no existir se agrega el cliente a la tabla
+  - Items: Cuenta con los productos que hay en stock
+  - Compras: registro de compras efectuadas, con información del cliente y productos seleccionados entre otras cosas
 
-In the project directory, you can run:
 
-### `npm start`
+## Características
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+El sitio cuenta entre otras cosas con
+- Contexto
+- Ruteo y navegación
+- Firebase
+- Eventos
+ 
+## Procesos principales
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Algunos de los procesos con que cuenta el sitio son los siguientes
 
-### `npm test`
+`itemListContainer`
+El contenedor mencionado posee el siguiente código que permite obtener el listado de productos. De existir el parámetro id se filtran los correspondientes a la categoría elegida
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+```js
+const [items, setItems] = useState([]);
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  const { id } = useParams();
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  useEffect(() => {
+    const db = getFirestore();
+    let itemsCollection = collection(db, 'items');
+    if (id) {
+      itemsCollection = query(itemsCollection, where('tipo', '==', id));
+    } 
+    getDocs(itemsCollection).then((snapshot) => {
+      setItems(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    });
+  },);
+}
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`ItemDetailContainer`
+En este contenedor encontraremos el siguiente código que nos permite obtener el detalle, de existir un valor de id, del item solicitado o de todos los items existentes en la tienda
 
-### `npm run eject`
+```js
+useEffect(() => {
+    const db = getFirestore();
+    if (id) {
+      const itemDet = doc(db, "items", id);
+      getDoc(itemDet).then((snapshot) => {
+        if (snapshot.exists()) {
+          setItemsDetails({ id: snapshot.id, ...snapshot.data() });
+          setAlineacion("justify-content-center");
+        }
+      });
+    } else {
+      const itemsCollection = collection(db, "items");
+      getDocs(itemsCollection).then((snapshot) => {
+        setItemsDetails(
+          snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+        );
+      });
+    }
+  }, [id]);
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`CartContext`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Dentro del contexto encontramos distintos elementos y funciones. Por ejemplo cart que es donde se almacena el carrito, cartCant que es la cantidad de elementos que posee y cartCosto que es el costo total del mismo. Ademas nos encontramos con las funciones que nos permiten manipular el contenido del mismo, ya sea sumar / restar unidades como eliminar items o vaciar completamente el carrito.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```js
+const addToCart = (obj, cant) => {
+    let itemInCart = cart.find((el) => el.id === obj.id);
 
-## Learn More
+    if (cart.find((el) => el.id === obj.id)) {
+      const index = cart.findIndex((object) => {
+        return object.id === itemInCart.id;
+      });
+      cart[index].cantidad = cant;
+      updCart();
+    } else {
+      obj.cantidad = cant;
+      setCart((cart) => [...cart, obj]);
+    }
+  };
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  const remFromCart = (obj) => {
+    let itemInCart = cart.find((el) => el.id === obj.id);
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    if (cart.find((el) => el.id === obj.id)) {
+      const index = cart.findIndex((object) => {
+        return object.id === itemInCart.id;
+      });
+      cart.splice(index, 1);
+      updCart();
+    }
+  };
+  
+  const clearCart = () => {
+    cart.splice(0);
+    setCart([]);
+  }
+```
+`Cart`
 
-### Code Splitting
+Dentro de este componente encontraremos funciones que nos permiten ver el contenido del carrito y finalizar la compra. En este último paso tambien sumamos una funcion que nos permite incoporar los clientes a una tabla, validando si estaban ingresados previamente o no. En el caso de existir se actualizan los datos para guardar los últimos cambios
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```js
+const q = query(baseClientes, where("email", "==", key.email));
+    getDocs(q).then((snapshot) => {
+      if (snapshot.docs.length > 0) {
+        setClienteExistente(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            email: key.email,
+            nombre: key.nombre,
+            telefono: key.telefono,
+          }))
+        );
+      } else {
+        addDoc(baseClientes, {
+          email: key.email,
+          nombre: key.nombre,
+          telefono: key.telefono,
+        });
+      }
+    });
 
-### Analyzing the Bundle Size
+addDoc(baseCompras, datosCompra).then((snapshot) => {
+      setId(snapshot.id);
+      setEmail(key.email);
+      clearCart();
+    });
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Agradecimientos
+Agradezco tanto al profesor Felix Blanco como a los tutores por la enseñanza y el apoyo brindado durante la cursada
 
-### Making a Progressive Web App
+## Contacto / Sugerencias
+Bruno Kichinovsky
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+brunokichi@gmail.com
 
-### Advanced Configuration
+[Linkedin](https://www.linkedin.com/in/bruno-leandro-kichinovsky/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

@@ -11,7 +11,6 @@ const CartItem = ({ item }) => {
 
   useEffect(() => {
     addToCart(item, cantidad);
-    //}, [cantidad]);
   }, [cantidad, item, addToCart]);
 
   const itemCountHandler = (key) => {

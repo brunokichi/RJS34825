@@ -1,27 +1,29 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300&family=Roboto:wght@300&display=swap");
 
 .card {
-    background-color: transparent !important; 
+  background-color: transparent !important;
 }
 
 .prod_card {
-    width: 130px;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    border-radius: 2px;
+  width: 130px;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 2px;
 }
 
 .prod_card_jdm {
-    width: 150px;
+  width: 150px;
 }
 
 .popp_s {
-    font-family: "Poppins", sans-serif;
-    font-size: 13px;
-    color: #e1e1e1!important;
-    font-weight: 500; }
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #e1e1e1;
+  font-weight: 500;
+}
 
-    .popp_m {
-        font-family: "Poppins", sans-serif;
-        font-size: 15px;
-        color: #e1e1e1!important;
-        font-weight: 500; }
+.popp_m {
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  color: #e1e1e1;
+  font-weight: 500;
+}

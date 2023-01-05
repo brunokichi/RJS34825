@@ -9,12 +9,14 @@ const CartProvider = ({ children }) => {
 
   const [cartCosto, setCartCosto] = useState(0);
 
-  useEffect(() => {
+  const updCart = () => {
     setCartCant(cart.reduce((acc, item) => acc + item.cantidad, 0));
-  }, [cart]);
+    setCartCosto(cart.reduce((acc, item) => acc + (item.cantidad * item.precio), 0));
+  }
 
   useEffect(() => {
-    setCartCosto(cart.reduce((acc, item) => acc + (item.cantidad * item.precio), 0));
+    updCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart]);
 
   const addToCart = (obj, cant) => {
@@ -25,8 +27,7 @@ const CartProvider = ({ children }) => {
         return object.id === itemInCart.id;
       });
       cart[index].cantidad = cant;
-      setCartCant(cart.reduce((acc, item) => acc + item.cantidad, 0));
-      setCartCosto(cart.reduce((acc, item) => acc + (item.cantidad * item.precio), 0));
+      updCart();
     } else {
       obj.cantidad = cant;
       setCart((cart) => [...cart, obj]);
@@ -41,8 +42,7 @@ const CartProvider = ({ children }) => {
         return object.id === itemInCart.id;
       });
       cart.splice(index, 1);
-      setCartCant(cart.reduce((acc, item) => acc + item.cantidad, 0));
-      setCartCosto(cart.reduce((acc, item) => acc + (item.cantidad * item.precio), 0));
+      updCart();
     }
   };
   
